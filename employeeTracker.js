@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "",
+  password: "Cs822021623_",
   database: "employeeTrackerDB"
 });
 
@@ -39,11 +39,11 @@ function runTracker() {
           "View All Employees",
           "View Employees By Department",
           "View Employees By Manager",
-          "Update Employee Role"
+          "Update Employee Role",
           // "Update Employee Manager",
-          // "Remove a Department",
-          // "Remove Employee",
-          // "Remove Role"
+          "Remove a Department",
+          "Remove Employee",
+          "Remove Role"
           
         ]
       })
@@ -77,9 +77,6 @@ function runTracker() {
           updateEmployee();
           break;
           
-        case "Exit":
-          console.log("Good Bye!");  
-
         // case "View Employees By Department":
         //   viewEmployeeByDepartment();
         //   break;  
@@ -88,17 +85,21 @@ function runTracker() {
         //   viewEmployeeByManager();
         //   break;
 
-        // case "Remove a Department":
-        //   removeDepartment();
-        //   break;
+        case "Remove a Department":
+          removeDepartment();
+          break;
           
-        // case "Remove Employee":
-        //   removeEmployee();
-        //   break; 
+        case "Remove Employee":
+          removeEmployee();
+          break; 
   
-        // case "Remove Role":
-        //   removeRole();
-        //   break;
+        case "Remove Role":
+          removeRole();
+          break;
+
+        case "Exit":
+          console.log("Good Bye!");  
+
         }
       });
   }
@@ -130,7 +131,7 @@ function addRole() {
       .prompt({
         type: "input",
         name: "newRole",
-        message: "What new role would you like to adde?"
+        message: "What new role would you like to added?"
       },
       {
         type: "number",
@@ -182,18 +183,19 @@ function addEmployee() {
         name: "manager_id",
         message: "What is the employee's managers's id?"
     }
-]).then(function (res) {
-        connection.query("INSERT INTO employee SET ?")
-        console.log("employee has been added");
-        runTracker();
-
-})
+]).then((res) => {
+  connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [res.first_name, res.last_name,  res.role_id, res.manager_id],(err, res) => {
+    if (err) throw err;
+    console.log("The new employee has been added");
+    runTracker();
+  });
+});
 
 }
 
 
 function viewDepartments() {
-  connection.query("SELECT name FROM department AS Departments", (err, res)=>{
+  connection.query("SELECT department.id AS ID, name FROM department AS Departments", (err, res)=>{
     if (err) throw err;
     console.table(res);
     runTracker();
@@ -201,7 +203,7 @@ function viewDepartments() {
 };
 
 function viewRoles() {
-  connection.query("SELECT title AS Roles FROM role", (err, res)=>{
+  connection.query("SELECT role.id AS ID, title AS Roles FROM role", (err, res)=>{
     if (err) throw err;
     console.table(res);
     runTracker();
@@ -235,6 +237,50 @@ function updateEmployee() {
               runTracker();
     })
   })
+}
+
+function removeEmployee() {
+  inquirer
+      .prompt({
+          type: "number",
+          name: "id",
+          message: "Enter the ID of the employee you would like to remove."
+      }).then((res) => {
+          connection.query("DELETE FROM employee WHERE id = ?", [res.id],(err, res) => {
+              if(err) throw err;
+              console.log("Employee was removed")
+              runTracker();
+          });
+      });
+}
+
+function removeDepartment() {
+  inquirer
+      .prompt({
+          type: "number",
+          name: "id",
+          message: "Enter the ID of the department that you would like to remove."
+      }).then((res) => {
+          connection.query("DELETE FROM department WHERE id = ?", [res.id],(err, res) => {
+              if(err) throw err;
+              console.log("Department was removed")
+              initiatePrompt();
+          });
+      });
+}
+function removeRole() {
+  inquirer
+      .prompt({
+          type: "number",
+          name: "id",
+          message: "Enter the ID of the role that you would like to remove."
+      }).then((res) => {
+          connection.query("DELETE FROM role WHERE id = ?", [res.id],(err, res) => {
+              if(err) throw err;
+              console.log("Role was removed")
+              initiatePrompt();
+          });
+      });
 }
 
 // function viewEmployeeByDepartment() {
