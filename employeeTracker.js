@@ -37,8 +37,8 @@ function runTracker() {
           "View All Departments",
           "View All Roles",
           "View All Employees",
-          "View Employees By Department",
-          "View Employees By Manager",
+          // "View Employees By Department",
+          // "View Employees By Manager",
           "Update Employee Role",
           // "Update Employee Manager",
           "Remove a Department",
@@ -195,7 +195,7 @@ function addEmployee() {
 
 
 function viewDepartments() {
-  connection.query("SELECT department.id AS ID, name FROM department AS Departments", (err, res)=>{
+  connection.query("SELECT department.id, name AS Departments FROM department", (err, res)=>{
     if (err) throw err;
     console.table(res);
     runTracker();
@@ -203,7 +203,7 @@ function viewDepartments() {
 };
 
 function viewRoles() {
-  connection.query("SELECT role.id AS ID, title AS Roles FROM role", (err, res)=>{
+  connection.query("SELECT role.id, title AS Roles FROM role", (err, res)=>{
     if (err) throw err;
     console.table(res);
     runTracker();
@@ -211,7 +211,7 @@ function viewRoles() {
 };
 
 function viewEmployees() {
-  connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON department.id = role.department_id LEFT JOIN employee manager ON manager.id = employee.manager_id", (err, res)=>{
+  connection.query("SELECT * FROM employee", (err, res)=>{
     if (err) throw err;
     console.table(res);
     runTracker();
@@ -305,35 +305,3 @@ function removeRole() {
 //       //possible function call here
 // };
 
-// function removeDepartment() {
-//     inquirer
-//       .prompt({
-
-//       })
-//       .then(function(answer){
-
-//       })
-//       //possible function call here
-// };
-
-// function removeEmployee() {
-//     inquirer
-//       .prompt({
-
-//       })
-//       .then(function(answer){
-
-//       })
-//       //possible function call here
-// };
-
-// function removeRole() {
-//     inquirer
-//       .prompt({
-
-//       })
-//       .then(function(answer){
-
-//       })
-//       //possible function call here
-// };
