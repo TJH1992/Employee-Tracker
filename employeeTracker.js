@@ -264,7 +264,7 @@ function removeDepartment() {
           connection.query("DELETE FROM department WHERE id = ?", [res.id],(err, res) => {
               if(err) throw err;
               console.log("Department was removed")
-              initiatePrompt();
+              runTracker();
           });
       });
 }
@@ -278,7 +278,7 @@ function removeRole() {
           connection.query("DELETE FROM role WHERE id = ?", [res.id],(err, res) => {
               if(err) throw err;
               console.log("Role was removed")
-              initiatePrompt();
+              runTracker();
           });
       });
 }
